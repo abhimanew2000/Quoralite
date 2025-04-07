@@ -1,0 +1,18 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="card" style="text-align: center;">
+    <h2>Confirm Deletion</h2>
+    <p>Are you sure you want to delete the question:</p>
+    <p><strong>"{{ question.title }}"</strong></p>
+    <p style="color: var(--danger); font-size: 0.9rem;">This action cannot be undone.</p>
+    
+    <form method="post">
+        {% csrf_token %}
+        <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem;">
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a href="{% url 'question_detail' question.id %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

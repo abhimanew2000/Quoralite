@@ -1,0 +1,46 @@
+
+<!-- question_detail.html -->
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="card">
+    <h2>{{ question.title }}</h2>
+    <p>{{ question.body|linebreaks }}</p>
+    <div class="question-meta">
+        Asked by {{ question.user.username }} on {{ question.created_at|date:"M d, Y" }}
+    </div>
+
+    {% if user == question.user %}
+        <div style="margin-top: 1rem;">
+            <a href="{% url 'edit_question' question.id %}" class="btn btn-secondary">Edit</a>
+            <a href="{% url 'delete_question' question.id %}" class="btn btn-danger">Delete</a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Answers ({{ answers|length }})</h3>
+    
+    {% if answers %}
+        {% for ans in answers %}
+            <div class="answer">
+                <p>{{ ans.content|linebreaks }}</p>
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-light);">
+                    <span>{{ ans.user.username }} • {{ ans.created_at|date:"M d, Y" }}</span>
+                    <a href="{% url 'like_answer' ans.id %}" style="color: var(--primary);">
+                        Like ({{ ans.likes.count }})
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No answers yet.</p>
+    {% endif %}
+    
+    {% if user.is_authenticated %}
+        <div style="margin-top: 1rem;">
+            <a href="{% url 'answer_question' question.id %}" class="btn">Answer</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

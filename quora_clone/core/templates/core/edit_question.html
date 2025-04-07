@@ -1,0 +1,29 @@
+!-- edit_question.html -->
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="card">
+    <h2>Edit Question</h2>
+    
+    <form method="post" class="form">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                    <ul class="errorlist">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" class="btn">Save</button>
+            <a href="{% url 'question_detail' question.id %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

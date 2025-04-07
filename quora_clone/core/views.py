@@ -14,6 +14,11 @@ def signup_view(request):
     else:
         form = SignupForm()
     return render(request, 'core/signup.html', {'form': form})  
+
+
+
+
+
 def login_view(request):
     error = None
     if request.method == "POST":
@@ -27,19 +32,27 @@ def login_view(request):
             error = "Invalid username or password"
     return render(request, 'core/login.html',{'error':error})
 
+
+
+
+
 @login_required
 def logout_view(request):
-    """
-    Single logout view. Having two identical functions with the same name
-    causes one to override the other. This is the correct version.
-    """
     logout(request)
     return redirect('login')
+
+
+
+
 
 @login_required
 def home_view(request):
     questions = Question.objects.all().order_by('-created_at')
     return render(request, 'core/home.html', {'questions': questions})
+
+
+
+
 
 @login_required
 def post_question(request):
@@ -49,11 +62,14 @@ def post_question(request):
             question = form.save(commit=False)
             question.user = request.user
             question.save()
-            return redirect('home')  # Returns an HttpResponseRedirect
+            return redirect('home')  
     else:
         form = QuestionForm()
-    # IMPORTANT: Must return a response in every code path
     return render(request, 'core/post_question.html', {'form': form})
+
+
+
+
 
 @login_required
 def question_detail(request, question_id):
@@ -69,22 +85,22 @@ def question_detail(request, question_id):
             answer.save()
             return redirect('question_detail', question_id=question.id)
         else:
-            # Form invalid: re-render the page with errors
             return render(request, 'core/question_detail.html', {
                 'question': question,
                 'answers': answers,
                 'form': form
             })
     else:
-        # GET request: provide a blank form
         form = AnswerForm()
 
-    # Render for GET or after a successful form submission
     return render(request, 'core/question_detail.html', {
         'question': question,
         'answers': answers,
         'form': form
     })
+
+
+
 
 
 
@@ -106,6 +122,10 @@ def answer_question(request, question_id):
         'form': form
     })
 
+
+
+
+
 @login_required
 def like_answer(request, answer_id):
     answer = get_object_or_404(Answer, pk=answer_id)
@@ -114,6 +134,11 @@ def like_answer(request, answer_id):
     else:
         answer.likes.add(request.user)
     return redirect('question_detail', question_id=answer.question.id)
+
+
+
+
+
 
 
 @login_required
@@ -126,15 +151,17 @@ def edit_question(request, question_id):
             form.save()
             return redirect('question_detail', question_id=question.id)
     else:
-        # For a GET request, prepopulate the form with the question data
         form = QuestionForm(instance=question)
 
-    # IMPORTANT: we need a return statement even if it's a GET request
     return render(request, 'core/edit_question.html', {
         'form': form,
         'question': question
     })
-    
+
+
+
+
+
 @login_required
 def delete_question(request,question_id):
     question = get_object_or_404(Question,pk=question_id,user=request.user)
